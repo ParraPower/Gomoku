@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using ServiceStack.DataAnnotations;
+using System;
 using Tofi.Framework.Data.Entities;
 
 namespace Gomoku.Data.Entities
 {
-    [Table("User")]
+    [Alias("User")]
     public class UserEntity : BaseEntity
     {
         public Guid UniqueKey { get; set; }
@@ -16,5 +14,6 @@ namespace Gomoku.Data.Entities
         public bool IsActive { get; set; }
         public bool IsRegistered { get; set; }
         public bool IsGuest { get; set; }
+        public string Password { get; set; }
     }
 }

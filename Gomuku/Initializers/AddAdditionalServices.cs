@@ -12,6 +12,8 @@ using Tofi.Framework.AspNetCore.Configuration;
 using Tofi.Framework.Context;
 using Tofi.Framework.DI;
 using Gomoku.Interfaces;
+using Gomoku.Logic.Models;
+using Gomoku.Logic.Authentication;
 
 namespace Gomoku.Initializers
 {
@@ -23,9 +25,11 @@ namespace Gomoku.Initializers
 
             AddCustomMappingProfile();
 
+            services.AddJwtAuthConfiguration(configuration);
+
             services.AddTofiFrameworkModules(configuration);
             
-            //services.AddTofiHttpContext();
+            services.AddTofiHttpContext();
 
             services.AddTofiMappingService();
 
@@ -37,6 +41,15 @@ namespace Gomoku.Initializers
         private static void AddHttpClientFactoryService(this IServiceCollection services)
         {
             services.AddHttpClient();
+        }
+
+        private static void AddJwtAuthConfiguration(this IServiceCollection services, IConfiguration configuration)
+        {
+            JwtAuthConfiguration jwtAuthConfiguration = new JwtAuthConfiguration();
+            configuration.GetSection("JwtAuthConfiguration").Bind(jwtAuthConfiguration);
+
+            //Create singleton from instance
+            services.AddSingleton<JwtAuthConfiguration>(jwtAuthConfiguration);
         }
 
         private static void AddCustomMappingProfile()
@@ -86,8 +99,9 @@ namespace Gomoku.Initializers
         private static void AddTofiHttpContext(this IServiceCollection services)
         {
             //replace default context with custom context
-            services.Replace<ICurrentContext, GomokuCurrentContext>();
             services.AddTransient<IGomokuCurrentContext, GomokuCurrentContext>();
+            services.Replace<ICurrentContext, GomokuCurrentContext>();
+            
         }
 
         private static void AddFluentMigrator(this IServiceCollection services)

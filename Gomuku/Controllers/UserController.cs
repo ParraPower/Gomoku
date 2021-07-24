@@ -10,7 +10,7 @@ using Tofi.Framework.Logging;
 
 namespace Gomoku.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -23,17 +23,40 @@ namespace Gomoku.Controllers
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
-        {
-            return null;
-        }
-
-        [HttpGet("{id}")]
-        public Task<User> GetUser([FromQuery] long id)
+        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest authenticateRequest)
         {
             try
             {
-                return _userService.GetUser(id);
+                return await _userService.Authenticate(authenticateRequest);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+        }
+
+        [HttpPost("register")]
+        public Task<User> Register(UserCreate userCreate)
+        {
+            try
+            {
+                return _userService.Register(userCreate);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<User> GetUser([FromQuery]long id)
+        {
+            try
+            {
+                return await _userService.GetUser(id);
             }
             catch (Exception ex)
             {
