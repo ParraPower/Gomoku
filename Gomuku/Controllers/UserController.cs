@@ -51,8 +51,8 @@ namespace Gomoku.Controllers
         }
 
         [Authorize]
-        [HttpGet]
-        public async Task<User> GetUser([FromQuery]long id)
+        [HttpGet("{id}")]
+        public async Task<User> GetUser([FromRoute]long id)
         {
             try
             {
